@@ -1,0 +1,21 @@
+{
+  "id": "/PDFtool/",
+  "name": "PDF 安全防護與編輯大師",
+  "short_name": "PDF保管箱",
+  "description": "手機用 PDF 工具：檢視與頁面整理、擷取內嵌附件、密碼加密與解密保管箱。",
+  "start_url": "/PDFtool/index.html",
+  "scope": "/PDFtool/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#EEF1F6",
+  "theme_color": "#2C57A6",
+  "lang": "zh-Hant-TW",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "business"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
