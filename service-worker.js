@@ -3,13 +3,15 @@
 // visitors pick up the new version instead of a stale cached copy.
 const CACHE_NAME = "pdf-vault-v1";
 const SCOPE = self.registration.scope; // e.g. https://ptchou.github.io/PDFtool/
+// Only same-origin files are precached here. pdf.js / pdf-lib / Tailwind /
+// crypto-js load from external CDNs in this app, so they're picked up by
+// the runtime cache-first handler below on first visit instead — trying
+// to precache a cross-origin URL that 404s (or is blocked) would make the
+// whole cache.addAll() install step fail.
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./pdf.min.js",
-  "./pdf.worker.min.js",
-  "./pdf-lib.min.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png"
 ];

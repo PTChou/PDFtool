@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2C57A6">
+    <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
     <title>PDF 安全防護與編輯大師</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -1058,6 +1062,13 @@
                 renderCurrentPage();
             }
         });
+    </script>
+    <script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("service-worker.js").catch(() => {});
+        });
+    }
     </script>
 </body>
 </html>
