@@ -1040,13 +1040,19 @@
                     u8[i] = byte;
                 }
 
-                if (u8.length === 0) {
+                // 密碼錯時 AES 多半還是解得出一串亂碼（長度不是 0），不能只看長度。
+                // 加密前一定是 PDF，所以檢查開頭有沒有 %PDF- 標記；沒有就當作密碼錯誤，
+                // 而且不動目前狀態，使用者可以直接重輸密碼。
+                const head = String.fromCharCode.apply(null, u8.subarray(0, 1024));
+                if (u8.length === 0 || !head.includes('%PDF-')) {
                     throw new Error('解密失敗，密碼錯誤');
                 }
 
                 AppState.rawArrayBuffer = u8.buffer;
                 AppState.isSecPdf = false;
-                await loadPdfData(u8.buffer);
+                // 給 pdf.js 一份複本：它會把收到的 buffer 轉交給 worker，原本那份會變成空的，
+                // 之後「導出」「再加密」就讀不到內容。
+                await loadPdfData(u8.buffer.slice(0));
                 showToast('解密成功！已載入 PDF 文件', 'success');
                 document.getElementById('input-decrypt-pwd').value = '';
                 // Return to view tab

@@ -1,7 +1,7 @@
 // PDF保管箱 — service worker
 // Bump CACHE_NAME whenever index.html or the bundled libs change, so
 // visitors pick up the new version instead of a stale cached copy.
-const CACHE_NAME = "pdf-vault-v1";
+const CACHE_NAME = "pdf-vault-v2";
 const SCOPE = self.registration.scope; // e.g. https://ptchou.github.io/PDFtool/
 // Only same-origin files are precached here. pdf.js / pdf-lib / Tailwind /
 // crypto-js load from external CDNs in this app, so they're picked up by
@@ -40,8 +40,11 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          // 只快取成功的回應，免得把 404／500 的錯誤頁存起來當離線版本。
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
           return res;
         })
         .catch(() => caches.match("./index.html"))
@@ -55,8 +58,12 @@ self.addEventListener("fetch", (event) => {
     caches.match(req).then((cached) => {
       if (cached) return cached;
       return fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        // 這裡是 cache-first：一旦把 CDN 暫時性的錯誤回應存進去，之後每次都會拿到
+        // 那個壞掉的版本。只存成功的（跨網域 CDN 的回應是 opaque，看不到狀態碼，照存）。
+        if (res.ok || res.type === "opaque") {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        }
         return res;
       });
     })
